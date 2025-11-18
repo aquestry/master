@@ -1,6 +1,5 @@
 package dev.anton
 
-import dev.anton.core.TemplateRegistry
 import dev.anton.model.Template
 import net.minestom.server.Auth
 import net.minestom.server.MinecraftServer
@@ -16,6 +15,5 @@ fun loadhardcodedstufffortesting() {
 
     //TemplateRegistry.add(lobbyTemplate)
     //val template = TemplateRegistry.findTemplateByName("lobby")
-
 
 }
