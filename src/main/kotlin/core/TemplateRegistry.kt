@@ -3,7 +3,7 @@ package dev.anton.core
 import dev.anton.model.Template
 
 object TemplateRegistry {
-    val templates = mutableSetOf<Template>()
+    private val templates = mutableSetOf<Template>()
 
     fun add(template: Template) {
         templates.add(template)
@@ -13,7 +13,5 @@ object TemplateRegistry {
         return templates.firstOrNull { it.name == name }
     }
 
-    fun getTemplates(): Set<Template> {
-        return templates
-    }
+    fun all(): Set<Template> = templates
 }

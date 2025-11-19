@@ -15,8 +15,8 @@ object WhitelistManager {
         }
     }
 
-    fun add(uuid: UUID, entry: WhitelistEntry) {
-        sessions[uuid] = entry
+    fun add(uuid: UUID) {
+        sessions[uuid] = WhitelistEntry()
     }
 
     fun cleanupExpired() {

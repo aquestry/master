@@ -5,11 +5,13 @@ import net.minestom.server.event.Event
 import net.minestom.server.event.player.AsyncPlayerConfigurationEvent
 import kotlin.reflect.KClass
 import dev.anton.event.events.AsyncPlayerConfiguration
+import dev.anton.event.events.PlayerSpawn
+import net.minestom.server.event.player.PlayerSpawnEvent
 
 internal object EventRegister {
-
-    init {
+    fun init() {
         register(AsyncPlayerConfigurationEvent::class, AsyncPlayerConfiguration())
+        register(PlayerSpawnEvent::class, PlayerSpawn())
     }
 
     fun <T : Event> register(eventClass: KClass<T>, listener: Listener<T>) {

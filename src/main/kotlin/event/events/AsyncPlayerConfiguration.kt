@@ -1,6 +1,9 @@
 package dev.anton.event.events
 
+import dev.anton.core.ServerRegistry
+import dev.anton.core.WhitelistManager
 import dev.anton.event.Listener
+import dev.anton.util.HmacUtil
 import net.minestom.server.MinecraftServer
 import net.minestom.server.event.player.AsyncPlayerConfigurationEvent
 import net.minestom.server.instance.InstanceContainer
@@ -12,7 +15,16 @@ class AsyncPlayerConfiguration : Listener<AsyncPlayerConfigurationEvent> {
 
     override fun invoke(event: AsyncPlayerConfigurationEvent) {
         event.spawningInstance = instance
-        event.player.playerConnection.storeCookie("master:session", "tests".toByteArray())
-        event.player.sendPacket(TransferPacket("127.0.0.1", 25566))
+        WhitelistManager.add(event.player.uuid)
+        val now = System.currentTimeMillis()/ 1000
+        val exp = now + 30
+
+        val target  = ServerRegistry.all().toList()[0]
+        val targetAddress = target.ip + ":" + target.port
+
+        val payload = "uuid=${event.player.uuid};target=$targetAddress;exp=$exp"
+        val token = HmacUtil.create(payload)
+        event.player.playerConnection.storeCookie("master:session", token.toByteArray())
+        event.player.sendPacket(TransferPacket(target.ip, target.port))
     }
 }
