@@ -1,5 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.gradle.jvm.tasks.Jar
+import org.gradle.api.file.DuplicatesStrategy
 
 plugins {
     kotlin("jvm") version "2.2.20"
@@ -45,4 +47,23 @@ application {
     applicationDefaultJvmArgs += listOf(
         "--sun-misc-unsafe-memory-access=allow"
     )
+}
+
+tasks.withType<Jar>().configureEach {
+    manifest {
+        attributes["Main-Class"] = "dev.anton.MainKt"
+    }
+    from(
+        configurations.runtimeClasspath.get()
+            .filter { it.name.endsWith("jar") }
+            .map { zipTree(it) }
+    ) {
+        exclude(
+            "META-INF/*.SF",
+            "META-INF/*.DSA",
+            "META-INF/*.RSA",
+            "META-INF/MANIFEST.MF"
+        )
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }

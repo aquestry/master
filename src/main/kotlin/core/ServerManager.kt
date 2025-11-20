@@ -8,17 +8,18 @@ import com.github.dockerjava.httpclient5.ApacheDockerHttpClient
 import com.github.dockerjava.transport.DockerHttpClient
 import dev.anton.model.Server
 import dev.anton.model.Template
-import java.io.File
 import dev.anton.logger
+import java.nio.file.Files
+import java.nio.file.Paths
 
 object ServerManager {
 
-    private val dockerSocket = if (File("/.dockerenv").exists())
-        "unix:///var/run/docker.sock"
-    else
-        "tcp://localhost:2375"
+    val host = System.getenv("DOCKER_HOST")
+        ?: if (System.getProperty("os.name").contains("win", true)) "tcp://localhost:2375"
+        else if (Files.exists(Paths.get("/var/run/docker.sock"))) "unix:///var/run/docker.sock"
+        else "tcp://host.docker.internal:2375"
 
-    private val config = DefaultDockerClientConfig.createDefaultConfigBuilder().withDockerHost(dockerSocket).build()
+    private val config = DefaultDockerClientConfig.createDefaultConfigBuilder().withDockerHost(host).build()
     var httpClient: DockerHttpClient = ApacheDockerHttpClient.Builder().dockerHost(config.dockerHost).build()
     var dockerClient: DockerClient = DockerClientImpl.getInstance(config, httpClient)
 
